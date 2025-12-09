@@ -1,0 +1,7 @@
+implementation 2
+Purpose: Record every error and failure.
+Include timestamps and quick fix notes.
+No cleaning, keep it raw factual.
+Used later for pattern discovery.
+
+

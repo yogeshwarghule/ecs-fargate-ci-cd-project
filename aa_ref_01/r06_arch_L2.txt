@@ -1,0 +1,71 @@
+architecture 2
+Purpose: Improved architecture version two.
+Add subcomponents and implementation detail.
+Reflects lessons from first draft.
+Closer to deployable technical blueprint.
+
+
+Project structure
+
+terraform-root/
+├── environments/
+│   └── prod/
+│       ├── main.tf
+│       ├── variables.tf
+│       ├── backend.tf
+│       └── terraform.tfvars   # prod-specific variables
+│
+├── modules/
+│   vpc/
+      main.tf
+      variables.tf
+      outputs.tf
+    ecs/
+      main.tf
+      variables.tf
+      outputs.tf
+    alb/
+      main.tf
+      variables.tf
+      outputs.tf
+    ecr/
+      main.tf
+      variables.tf
+      outputs.tf
+    iam/
+      main.tf
+      variables.tf
+      outputs.tf
+    cloudwatch/
+      main.tf
+      variables.tf
+      outputs.tf
+
+  providers.tf
+  versions.tf
+  backend.tf
+  variables.tf
+  outputs.tf
+  main.tf
+
+DEPENDENCIES:
+- Network module must be applied first; its VPC, subnets, and security groups are exported and consumed by ECS, ALB
+- ECS tasks require subnet IDs, security groups
+- ALB needs VPC + public subnets + target security groups coming from the network and ECS modules.
+- Monitoring (cloudwatch) attaches to resources created by network, ECS and ALB modules via ARNs and IDs.
+
+NAMING Convention of resources:
+<project-name>-<env>-<resource-name>
+e.g., azodha-ecs-alb, azodha-vpn-sg
+
+tagging of the infra: 
+<Tag Key>       <Example Value>        <Purpose>
+<Name>          <myapp-prod-alb>       <Human-readable name (shows in console).>
+<Environment>   <dev / test / prod>    <Lifecycle and risk level.>
+<Application>   <myapp>                <Logical app or service name.>
+
+
+SECURITY:
+- SG layering: ALB → ECS 
+- IAM separation: pipeline roles vs ECS task roles
+

@@ -1,0 +1,7 @@
+architecture 3
+Purpose: Explain logic behind architecture.
+Question design decisions for clarity.
+Use for rubber-duck style reasoning.
+Validates if architecture truly holds.
+
+

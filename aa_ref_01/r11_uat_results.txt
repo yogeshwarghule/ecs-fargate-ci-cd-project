@@ -1,0 +1,6 @@
+testing and wrap-up
+Purpose: Track user acceptance testing.
+Map actual results to PRD v2.
+Mark passes, fails, pending retests.
+Confirms build matches expectations.
+

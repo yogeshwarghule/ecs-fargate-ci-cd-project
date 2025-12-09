@@ -1,0 +1,24 @@
+research
+Purpose: Collect key domain learnings.
+Summaries of research and best practices.
+copy/ paste best practices , architectural pattern
+
+
+Terraform Design Notes:
+- Use S3 + DynamoDB backend per environment.
+- Modular layout: network, compute, ecs, alb, monitoring.
+- Follow workspace isolation (prod).
+
+AWS Best Practices:
+- Use 3-tier subnet layout (public/app/db) in each VPC.
+- ECS on Fargate for simplicity (no EC2 ASG).
+- IAM least privilege per task role.
+- Centralized logging → CloudWatch.
+
+Networking Standards:
+- CIDRs: Admin (10.10.0.0/16), Test (10.20.0.0/16), Prod (10.30.0.0/16).
+- Each VPC: 2 public, 2 private app, 2 private db subnets.
+
+
+
+

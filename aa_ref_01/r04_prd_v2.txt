@@ -1,0 +1,39 @@
+specification 2
+purpose: Refined and detailed PRD.
+Include inputs, outputs, edge cases.
+Convert ideas into actionable plan.
+Everything here must be testable.
+
+
+ENVIRONMENTS: prod
+REGION: ap-south-1
+
+INPUTS:
+- vpc_cidrs = ["10.10.0.0/16", "10.20.0.0/16", "10.30.0.0/16"]
+- cluster_type = "ECS Fargate"
+- image_repo = ECR (per env)
+- github_repo = 
+
+OUTPUTS:
+- vpn_public_ip
+- ecs_service_urls (prod)
+- rds_endpoints (prod)
+
+NON-FUNCTIONAL:
+- Private subnets for ECS 
+- TLS 1.2+, ACM-managed certs
+
+TECH STACK and PORTS:
+- Nodejs application
+- APPLICATION RUNNING ON PORT 
+
+
+APPLICATION AND THEIR DEPENDENCIES:
+We have very small Node.js API (Express/Fastify — anything is fine).
+The API must expose two HTTP routes:
+GET /health → returns a simple status JSON.
+GET /predict → returns a fixed JSON { "score": 0.75 }.
+No database, no business logic, no external integration — just static responses.
+The purpose is to see your ability to containerize, deploy, and automate CI/CD, not to build complex backend logic.
+They want you to show clean code, Dockerfile, infra, and deployment, not a fancy API.
+

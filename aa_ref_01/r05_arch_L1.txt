@@ -1,0 +1,43 @@
+architecture 1
+Purpose: First draft of architecture.
+Describe main components and flows.
+Rough structure linking with PRD v2.
+Helps visualize initial system layout.
+
+
+Infra Creation Flow:
+3. Create Prod VPC (ECS Cluster, external ALBs)
+7. Configure Monitoring (CloudWatch logs + alarms)
+
+Terraform Flow:
+Plan → Network → Compute → Data → Connectivity → Security → Validate
+
+
+Phase 1 — Foundation & Planning
+Define the goal and environment – What are you building (e.g., VPC + EC2 )? Which region, environment (prod)?
+Decide state management – Where Terraform state will live (S3 ).
+Decide folder/module layout – Will it be monolithic, modular, or layered (network / compute / database / security )?
+
+Phase 2 — Networking Layer
+Create VPC module first – CIDR, subnets (public/private), route tables, IGW, NAT, endpoints.
+Add security boundaries – NACLs, security groups, common tagging.
+Validate connectivity – Check private/public subnets behave as expected (ping test, SSM connectivity).
+
+Phase 3 — Compute Layer
+Define IAM roles & profiles – EC2 roles, instance profiles, least privileges.
+Create compute resources – EC2, ASG, Launch Template, ECS
+Attach monitoring/logging – CloudWatch groups, metrics, alarms.
+Validate reachability – ALB health checks, app deployment test.
+
+Phase 6 — Security, Observability, Ops
+Add CloudWatch alarms, logging, metrics filters.
+Enable encryption, versioning, backups.
+Add tagging and cost-allocation policies.
+
+Phase 7 — Validation & Automation
+Run terraform validate, plan, apply on test environment.
+Smoke test manually (UAT).
+Add CI/CD pipeline to automate plan + apply + lint checks.
+
+That’s the mental hierarchy:
+Plan → Network → Compute → Data → Connectivity → Security → Validate

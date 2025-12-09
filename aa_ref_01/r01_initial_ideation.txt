@@ -1,0 +1,46 @@
+ideation
+Purpose: raw ideas , doubts, random thoughts 
+
+Goal: Provision full multi-environment infra on AWS using Terraform.
+
+We will have 1 VPCs — Production.
+
+Prod: ECS cluster for production workloads, ALBs (external).
+
+Need to handle:
+- CI/CD pipeline using github action 
+Using GitHub Actions (preferred):
+CI must:
+• Build + test
+• Build container image
+• Push image to ECR 
+CD must: Deploy updated image to ECS
+Use rolling or blue-green deployment
+
+
+- Centralized monitoring one CloudWatch dashboard 
+CloudWatch metrics (CPU, memory, error count)
+Two alerts: high CPU/memory, health check failures
+
+- security 
+Security Expectations
+Demonstrate:
+• IAM least-privilege
+• Secrets stored in AWS Secrets Manager or SSM
+• No credentials in repo
+• HTTPS enforcement explanation
+
+Documentation (1–2 pages)
+README must include:
+• Simple architecture diagram
+• CI/CD workflow explanation
+• Deployment steps
+• Monitoring & alert design
+• Security considerations
+
+Maybe later:
+- Add WAF, CloudFront
+- Add ECR registry & Secrets Manager rotation
+- vpn 
+
+

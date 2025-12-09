@@ -1,0 +1,155 @@
+testing and wrap-up
+Purpose: Dump random prompts and notes.
+Store stray ideas or useful links.
+Timestamp everything for later context.
+Acts as free scratchpad for project.
+
+Note:
+Add AWS Backup plan for RDS later.
+Integrate Security Hub findings → Slack.
+Experiment with Terraform Cloud for remote backend management.
+
+
+
+Prompt to Q:
+
+You are AWS Solution Architect ,having a expertise in writing a terraform code using Amazon Q Developer with the AWS Terraform MCP Server.
+For reference - Use the attached project context folder (tf_ref_01/) including all files (r01 → r11, q_rules.memory, q_rules_policies.md).
+Consider ALL guardrails, standards, assumptions, best practices, and constraints written across the context files.
+Your task now is to generate the full Terraform code . wait for the next prompts
+
+..............................
+
+You are Amazon Q Developer with the AWS Terraform MCP Server enabled.
+
+First task:
+Read & internalize ALL files I have added to context:
+- r01_initial_ideation.txt
+- r02_domain_analysis.txt
+- r03_prd_v1.txt
+- r04_prd_v2.txt
+- r05_arch_L1.txt
+- r06_arch_L2.txt
+- r07_explain_architecture.txt
+- r08_TDD_v1.txt
+- r09_bug_log.txt
+- r10_avoid_bugs.txt
+- r11_uat_results.txt
+- r99_unclassified.txt
+- q_rules.memory
+- q_rules_policies.md
+
+Do NOT generate any Terraform code yet.
+
+Your output should be:
+1. Summary of what architecture we are building
+2. List of required modules you will later generate
+3. Any inconsistencies or missing info found
+4. Confirmation that you will strictly follow all guardrails, best practices, and constraints
+
+Only analyze, do not generate code yet.
+
+..........................
+
+Use the AWS Terraform MCP Server.
+Create the complete Terraform folder structure using best practices and following the context files:
+Do not write any resource code yet.
+Just create the structure.
+
+.........................
+
+
+
+🔶 Networking Layer - Terraform Prompt Template
+
+STEP 1: Set up the initial VPC and subnets (with best practices)
+
+Please use Terraform to provision a VPC with the following:
+- CIDR block: [Insert your preferred CIDR range here, e.g., 10.10.0.0/16]
+- At least two public subnets and two private subnets across **multi-AZs**. Ensure that private subnets do not have direct internet access.
+- Attach an **Internet Gateway (IGW)** to the VPC for internet access from public subnets.
+- Ensure appropriate **route tables** for routing traffic for public and private subnets.
+- Please follow **AWS best practices** for networking setup — such as using **smaller CIDR blocks** for subnets, **distributing public/private resources across different AZs**, and ensuring that routing between the subnets and IGW is optimized for security and cost.
+
+Since I'm providing a high-level VPC structure, feel free to use your **best practices** for network design and **subnet sizes**. If you find any opportunities for improvements, feel free to validate and adjust the CIDR ranges or AZ selection as per best practices. Please make sure the subnet design is scalable for future growth.
+
+**MCP Server (if applicable)**: Please leverage the **Terraform MCP Server** to ensure that the configuration is optimized according to the best practices for scalability, security, and cost-efficiency.
+
+**Outputs to include**:
+- VPC ID
+- Public Subnet IDs
+- Private Subnet IDs
+- Internet Gateway ID
+
+....................................................
+
+STEP 2: Add NAT Gateway for private subnets (if applicable)
+
+Please proceed to create a **NAT Gateway** for the private subnets, allowing them to access the internet without exposing them publicly. Here's what to consider:
+- The NAT Gateway should be placed in one of the public subnets, with a proper **Elastic IP (EIP)**.
+- Update the route tables for private subnets to route outbound traffic to the NAT Gateway for internet access.
+- Please validate the **cost optimization** of using one NAT Gateway vs multiple NATs (especially if scaling is needed).
+
+I am assuming the NAT Gateway will help provide **outbound internet access** for private subnets, but feel free to optimize the architecture based on best practices for handling private-to-public traffic, possibly recommending **VPC endpoints** if appropriate.
+
+**Outputs**:
+- NAT Gateway ID
+- Elastic IP ID
+
+
+..............................
+
+STEP 3: Add VPC endpoints for AWS services (S3, SSM)
+
+Please create VPC Endpoints for the following services:
+- **S3 endpoint** to avoid routing traffic through the NAT Gateway for S3 access.
+- **SSM endpoint** for securely managing instances in private subnets without routing through the NAT Gateway.
+
+Please validate that your endpoints are created in the appropriate subnets, and the routing is set up correctly. Ensure that **security groups** and **route tables** are appropriately updated.
+
+**MCP Server**: Feel free to validate the use of **VPC endpoints vs NAT Gateway** to avoid unnecessary egress charges for internal AWS service communication.
+
+**Outputs**:
+- VPC Endpoint IDs for S3 and SSM.
+
+
+..........................
+
+STEP 4: Configure Security Groups and NACLs (with best practices)
+
+Please create **Security Groups (SGs)** and **Network Access Control Lists (NACLs)** with the following:
+- **Public subnet SG**: Open HTTP/HTTPS traffic (ports 80/443) from anywhere, but **restrict SSH** access to only trusted sources (or avoid SSH completely if using SSM).
+- **Private subnet EC2 instances SG**: Allow access only from public subnets via SSH/SSM.
+- **RDS SG**: Allow only connections from EC2 instances in private subnets (no public access).
+- Ensure **NACLs** are configured to allow **necessary inbound and outbound traffic** while maintaining least privilege for both private and public subnets.
+
+Please use **AWS best practices** for **SG configuration**, ensuring least-privilege access and **no unnecessary open ports**. You can adjust security group rules if additional services require access in the future.
+
+Feel free to **validate security group rules** based on your design and provide suggestions for additional restrictions or optimizations if required.
+
+**Outputs**:
+- SG IDs for public/private EC2 instances
+- RDS SG ID
+- NACL configuration outputs
+
+...................
+
+STEP 5: Validate Networking Setup (Manual Test and LLM Validation)
+
+Please run the following manual tests to validate the networking setup:
+1. **Public Subnet**: Test that EC2 instances in the public subnet can be accessed from the internet (ping test, HTTP test).
+2. **Private Subnet**: Test that EC2 instances in the private subnet cannot be accessed from the internet.
+3. **NAT Gateway**: Test that private subnets can access the internet through the NAT Gateway (e.g., `curl https://www.google.com` from private EC2).
+4. **VPC Endpoints**: Verify that **SSM** and **S3** work from private subnets without passing through the NAT Gateway.
+5. **Security Groups**: Verify access permissions:
+   - EC2 instance in public subnet can be accessed via HTTP from the internet.
+   - EC2 instance in private subnet should **only** be accessed via SSM from public subnet.
+   - RDS should only allow connections from private EC2 instances (no public access).
+
+Feel free to **validate with MCP Server** on the **networking design quality** — check if improvements are possible in terms of **security** or **cost optimizations**.
+
+**Outputs**:
+- Test results for each validation item.
+
+.........................
+

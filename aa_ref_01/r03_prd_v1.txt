@@ -1,0 +1,14 @@
+specification 1
+Purpose: roduct requirements (user journey - refined inputs and outputs )
+Outline user stories and outcomes.
+High-level vision, not detailed specs.
+
+
+As a developer,
+I want a secure production environment to deploy ECS services
+so I can test before going live.
+
+As a user,
+I want to access the production application via alb HTTPS endpoint
+so that the app is public and highly available.
+

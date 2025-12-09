@@ -1,0 +1,7 @@
+implementation 1
+Purpose: Write test-driven plan outline.
+List checks before writing any code.
+Defines success conditions for modules.
+Guides LLM toward correct implementation.
+
+

@@ -1,0 +1,11 @@
+implementation 3
+Purpose: recurring bug patterns.
+Translate mistakes into prevent rules.
+Quick reminder before next project.
+
+
+- Never reuse subnet IDs between layers.
+- Always define SG references through outputs, not locals.
+- Peering routes must be added both ways.
+- Use depends_on for cross-module SG or DB dependencies.
+- Always use SSM Parameter Store for DB password, never TF vars.
