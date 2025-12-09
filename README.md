@@ -118,6 +118,28 @@ cd terraform/environments/prod
 terraform destroy
 ```
 
+## Daily Workflow
+
+### Deploy (Morning)
+```bash
+cd terraform/environments/prod
+terraform apply -auto-approve
+```
+
+### Destroy (Evening)
+```bash
+cd terraform/environments/prod
+terraform destroy -auto-approve
+```
+
+**Saves**: ~$3.24/day by destroying when not in use
+
+## Documentation
+
+- [DEPLOYMENT.md](DEPLOYMENT.md) - Complete deployment guide
+- [COMMANDS.md](COMMANDS.md) - Quick command reference
+- [.github/workflows/README.md](.github/workflows/README.md) - CI/CD pipeline setup
+
 ## License
 
 MIT
