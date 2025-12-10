@@ -44,7 +44,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: ./application
-        run: npm ci
+        run: npm install
 
       - name: Run security audit
         working-directory: ./application
