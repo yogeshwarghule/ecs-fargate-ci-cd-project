@@ -1,5 +1,5 @@
 # Stage 1: Builder
-FROM node:18-alpine AS builder
+FROM node:25-alpine AS builder
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ RUN npm install
 COPY index.js ./
 
 # Stage 2: Production
-FROM node:18-alpine AS production
+FROM node:25-alpine AS production
 
 WORKDIR /app
 
