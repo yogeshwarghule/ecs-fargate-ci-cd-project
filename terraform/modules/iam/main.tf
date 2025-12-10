@@ -25,6 +25,23 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+# Secrets Manager access for task execution role
+resource "aws_iam_role_policy" "task_execution_secrets" {
+  name = "${var.project_name}-${var.environment}-task-execution-secrets"
+  role = aws_iam_role.ecs_task_execution.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = [
+        "secretsmanager:GetSecretValue"
+      ]
+      Resource = aws_secretsmanager_secret.app_secrets.arn
+    }]
+  })
+}
+
 resource "aws_iam_role_policy" "ecr_pull" {
   name = "${var.project_name}-${var.environment}-ecr-pull"
   role = aws_iam_role.ecs_task_execution.id
