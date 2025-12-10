@@ -69,7 +69,6 @@ jobs:
           scan-type: 'fs'
           scan-ref: './application'
           format: 'table'
-          output: 'trivy-results.txt'
 
   build:
     runs-on: ubuntu-latest
@@ -125,7 +124,6 @@ jobs:
         with:
           image-ref: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
           format: 'table'
-          output: 'image-trivy-results.txt'
 
   deploy:
     runs-on: ubuntu-latest
@@ -213,34 +211,31 @@ jobs:
     if: always()
     steps:
       - name: Notify Slack - Success
-        if: needs.deploy.result == 'success'
+        if: needs.deploy.result == 'success' && env.SLACK_WEBHOOK_URL != ''
         uses: 8398a7/action-slack@v3
         continue-on-error: true
         with:
           status: success
           text: '✅ Production deployment successful!'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Notify Slack - Failure
-        if: needs.deploy.result == 'failure' || needs.test.result == 'failure' || needs.security-scan.result == 'failure' || needs.build.result == 'failure'
+        if: (needs.deploy.result == 'failure' || needs.test.result == 'failure' || needs.security-scan.result == 'failure' || needs.build.result == 'failure') && env.SLACK_WEBHOOK_URL != ''
         uses: 8398a7/action-slack@v3
         continue-on-error: true
         with:
           status: failure
           text: '❌ Production deployment failed!'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Notify Slack - Rollback
-        if: needs.rollback.result == 'success'
+        if: needs.rollback.result == 'success' && env.SLACK_WEBHOOK_URL != ''
         uses: 8398a7/action-slack@v3
         continue-on-error: true
         with:
           status: warning
           text: '🔄 Production deployment rolled back!'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
