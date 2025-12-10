@@ -37,13 +37,6 @@ Our infrastructure follows AWS Well-Architected principles:
 - **IAM**: Least-privilege security model
 - **Secrets Manager**: Secure credential storage
 
-### Network Design:
-```
-Internet → ALB (Public Subnets) → ECS Tasks (Private Subnets)
-                                      ↓
-                              VPC Endpoints (No NAT Gateway!)
-```
-
 **Why this architecture?**
 - **Cost-effective**: VPC endpoints eliminate NAT Gateway costs (~$45/month saved)
 - **Secure**: ECS tasks run in private subnets with no internet access
@@ -134,42 +127,9 @@ terraform apply
 
 #### Step 2: Deploy Application
 
-**Option A: GitHub Actions (Recommended)**
+**GitHub Actions (Recommended)**
 1. Add GitHub secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`
 2. Push changes or manually trigger workflow
-
-**Option B: Manual Docker Push**
-```bash
-# Login to ECR
-aws ecr get-login-password --region ap-south-1 --profile terraform-mcp | \
-  docker login --username AWS --password-stdin <account-id>.dkr.ecr.ap-south-1.amazonaws.com
-
-# Build and push
-cd application
-docker build -t assignment-prod:latest .
-docker tag assignment-prod:latest <ecr-url>:latest
-docker push <ecr-url>:latest
-
-# Deploy to ECS
-aws ecs update-service --cluster assignment-prod-cluster \
-  --service assignment-prod-service --force-new-deployment
-```
-
-### Verify Deployment
-```bash
-# Check service status
-aws ecs describe-services --cluster assignment-prod-cluster \
-  --services assignment-prod-service --query "services[0].[runningCount,desiredCount]"
-
-# Test endpoints
-curl http://$(terraform output -raw alb_dns_name)/health
-curl http://$(terraform output -raw alb_dns_name)/predict
-```
-
-### Daily Cleanup (Cost Saving)
-```bash
-terraform destroy  # Saves ~$3.24/day
-```
 
 ![ECR Registry](images/ecr-registry.png)
 
@@ -251,33 +211,7 @@ Security is built into every layer of our architecture.
 - **Dependency audit**: npm audit for vulnerabilities
 - **ECR scanning**: Automatic image vulnerability detection
 
-## Cost Optimization
 
-Smart cost management without compromising functionality.
-
-### Daily Destroy Strategy
-**Morning**: `terraform apply` (5 minutes)
-**Evening**: `terraform destroy` (3 minutes)
-
-**Monthly savings**: ~$97 (from $100 to $3)
-
-### What Persists (Free):
-- ECR repository and images (500MB free tier)
-- Terraform state files
-- GitHub repository and actions
-
-### What Gets Recreated:
-- VPC and networking (free)
-- ECS cluster and services (~$0.08/hour)
-- Application Load Balancer (~$0.025/hour)
-- VPC endpoints (~$0.03/hour)
-
-### Cost Breakdown:
-```
-Running 24/7: ~$100/month
-Daily destroy: ~$3/month (work hours only)
-Savings: 97% cost reduction!
-```
 
 ## Future Improvements
 
@@ -304,26 +238,12 @@ Here's how we can enhance this solution for production scale:
 - **Synthetic monitoring**: Automated endpoint testing
 - **Performance insights**: Application performance monitoring
 
-### DevOps Enhancements
-- **GitOps**: ArgoCD or Flux for deployment automation
-- **Feature flags**: LaunchDarkly or AWS AppConfig
-- **Blue/Green deployments**: Zero-downtime deployments
-- **Canary releases**: Gradual rollout strategy
-- **Infrastructure testing**: Terratest for IaC validation
-
 ### Enterprise Features
 - **Service mesh**: Istio or AWS App Mesh
 - **API Gateway**: Rate limiting and authentication
 - **Backup strategy**: Automated backup and recovery
 - **Compliance**: SOC2, HIPAA compliance features
 - **Multi-tenancy**: Support for multiple customers
-
-### AI/ML Integration
-- **Model serving**: SageMaker endpoints
-- **Data pipeline**: Step Functions for ML workflows
-- **A/B testing**: Experiment management
-- **Real-time inference**: Kinesis for streaming data
-- **Model monitoring**: Drift detection and retraining
 
 ## Project Structure
 
