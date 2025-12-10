@@ -50,6 +50,21 @@ resource "aws_ecs_task_definition" "main" {
     }
 
     environment = []
+    
+    secrets = [
+      {
+        name      = "DATABASE_URL"
+        valueFrom = "${var.secrets_manager_arn}:database_url::"
+      },
+      {
+        name      = "API_KEY"
+        valueFrom = "${var.secrets_manager_arn}:api_key::"
+      },
+      {
+        name      = "JWT_SECRET"
+        valueFrom = "${var.secrets_manager_arn}:jwt_secret::"
+      }
+    ]
   }])
 
   tags = {

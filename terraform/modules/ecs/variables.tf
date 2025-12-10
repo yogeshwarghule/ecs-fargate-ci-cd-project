@@ -43,3 +43,8 @@ variable "desired_count" {
   type    = number
   default = 2
 }
+
+variable "secrets_manager_arn" {
+  type        = string
+  description = "ARN of the Secrets Manager secret"
+}

@@ -45,6 +45,7 @@ module "ecs" {
   task_execution_role_arn = module.iam.ecs_task_execution_role_arn
   task_role_arn           = module.iam.ecs_task_role_arn
   target_group_arn        = module.alb.target_group_arn
+  secrets_manager_arn     = module.iam.secrets_manager_arn
 }
 
 module "cloudwatch" {

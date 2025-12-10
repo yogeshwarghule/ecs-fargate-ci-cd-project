@@ -1,8 +1,12 @@
-require('dotenv').config();
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
-const HOST = process.env.HOST || 'localhost';
+const HOST = process.env.HOST || '0.0.0.0';
+
+// Access secrets via environment variables (injected by ECS)
+const DATABASE_URL = process.env.DATABASE_URL;
+const API_KEY = process.env.API_KEY;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // GET /health endpoint
 app.get('/health', (req, res) => {

@@ -34,3 +34,8 @@ output "cloudwatch_dashboard_name" {
   description = "CloudWatch Dashboard Name"
   value       = module.cloudwatch.dashboard_name
 }
+
+output "secrets_manager_arn" {
+  description = "AWS Secrets Manager ARN"
+  value       = module.iam.secrets_manager_arn
+}
